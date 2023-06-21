@@ -12,7 +12,7 @@ void print_Exponent(double x) {
 
     // Print exponent in binary format
     printf("Binary exponent: 0b");
-    for (int i = 10; i >= 0; i--) {
+    for (int i=10;i>=0;i--) {
         printf("%d", (exponent >> i) & 1);
     }
     printf("\n");

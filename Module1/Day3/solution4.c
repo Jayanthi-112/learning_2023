@@ -5,7 +5,7 @@ int find_SmallestDigit(int num) {
     
     while (num > 0) {
         int digit = num % 10;
-        if (digit<smallest)
+        if (digit < smallest)
             smallest = digit;
         num /= 10;
     }
@@ -18,7 +18,7 @@ int find_LargestDigit(int num) {
     
     while (num > 0) {
         int digit = num % 10;
-        if (digit>largest)
+        if (digit > largest)
             largest = digit;
         num /= 10;
     }
@@ -49,14 +49,14 @@ int main() {
         if (i==1) {
             smallest = find_SmallestDigit(num);
             largest = find_LargestDigit(num);
-        }else{
+        } else {
             int curr_Smallest = find_SmallestDigit(num);
             int curr_Largest = find_LargestDigit(num);
             
-            if (curr_Smallest<smallest)
+            if (curr_Smallest < smallest)
                 smallest = curr_Smallest;
             
-            if (curr_Largest>largest)
+            if (curr_Largest > largest)
                 largest = curr_Largest;
         }
     }
