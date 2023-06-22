@@ -3,74 +3,61 @@
 #include <string.h>
 
 #define MAX_ENTRIES 100
-#define MAX_LINE_LENGTH 100
 
-typedef struct {
+struct LogEntry {
     int entryNo;
     char sensorNo[10];
     float temperature;
     int humidity;
     int light;
     char time[10];
-} LogEntry;
+};
 
-void extractLogEntries(LogEntry logEntries[], int* numofEntries) {
-    FILE *file;
-    char line[MAX_LINE_LENGTH];
-    char *token;
-    int entryCount = 0;
-
-    file = fopen("data.csv", "r");
+void extractLogEntries(struct LogEntry logEntries[], int *numofEntries) {
+    FILE *file = fopen("data.csv", "r");
     if (file == NULL) {
-        printf("Unable to open the file.\n");
-        return;
+        printf("Unable to open data.csv\n");
+        exit(1);
     }
 
-    // Read each line from the file and extract the log entry details
-    while (fgets(line, MAX_LINE_LENGTH, file) != NULL) {
-        token = strtok(line, ",");
-        logEntries[entryCount].entryNo = atoi(token);
+    char line[100];
+    int count = 0;
 
-        token = strtok(NULL, ",");
-        strcpy(logEntries[entryCount].sensorNo, token);
+    // Skip the header line
+    fgets(line, sizeof(line), file);
 
-        token = strtok(NULL, ",");
-        logEntries[entryCount].temperature = atof(token);
+    while (fgets(line, sizeof(line), file) != NULL) {
+        // Extract each field from the line
+        struct LogEntry entry;
+        sscanf(line, "%d,%[^,],%f,%d,%d,%[^,\n]", &entry.entryNo, entry.sensorNo, &entry.temperature, &entry.humidity, &entry.light, entry.time);
 
-        token = strtok(NULL, ",");
-        logEntries[entryCount].humidity = atoi(token);
+        // Store the entry in the array
+        logEntries[count] = entry;
+        count++;
 
-        token = strtok(NULL, ",");
-        logEntries[entryCount].light = atoi(token);
-
-        token = strtok(NULL, ",");
-        strcpy(logEntries[entryCount].time, token);
-
-        entryCount++;
+        if (count >= MAX_ENTRIES) {
+            printf("Exceeded maximum number of entries.\n");
+            break;
+        }
     }
 
-    *numofEntries = entryCount;
+    *numofEntries = count;
 
     fclose(file);
 }
 
-void displayLogEntries(LogEntry logEntries[], int numofEntries) {
+void displayLogEntries(struct LogEntry logEntries[], int numofEntries) {
+    printf("Log Entries:\n");
     printf("EntryNo\tSensorNo\tTemperature\tHumidity\tLight\tTime\n");
     printf("-----------------------------------------------------------------------------\n");
-
-    for (int i = 0; i < numofEntries; i++) {
-        printf("%d\t%s\t\t%.1f\t\t%d\t\t%d\t%s\n",
-               logEntries[i].entryNo,
-               logEntries[i].sensorNo,
-               logEntries[i].temperature,
-               logEntries[i].humidity,
-               logEntries[i].light,
-               logEntries[i].time);
+    int i;
+    for (i = 0; i < numofEntries; i++) {
+        printf("%d\t%s\t\t%.1f\t\t%d\t\t%d\t%s\n", logEntries[i].entryNo, logEntries[i].sensorNo, logEntries[i].temperature, logEntries[i].humidity, logEntries[i].light, logEntries[i].time);
     }
 }
 
 int main() {
-    LogEntry logEntries[MAX_ENTRIES];
+    struct LogEntry logEntries[MAX_ENTRIES];
     int numofEntries = 0;
 
     extractLogEntries(logEntries, &numofEntries);
