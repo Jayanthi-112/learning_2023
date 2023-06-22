@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define MAX_ENTRIES 100
 #define MAX_LINE_LENGTH 100
 
@@ -13,7 +14,7 @@ typedef struct {
     char time[10];
 } LogEntry;
 
-void extractLogEntries(LogEntry logEntries[], int* numEntries) {
+void extractLogEntries(LogEntry logEntries[], int* numofEntries) {
     FILE *file;
     char line[MAX_LINE_LENGTH];
     char *token;
@@ -48,16 +49,16 @@ void extractLogEntries(LogEntry logEntries[], int* numEntries) {
         entryCount++;
     }
 
-    *numEntries = entryCount;
+    *numofEntries = entryCount;
 
     fclose(file);
 }
 
 void displayLogEntries(LogEntry logEntries[], int numofEntries) {
     printf("EntryNo\tSensorNo\tTemperature\tHumidity\tLight\tTime\n");
-    printf("------------------------------------------------------\n");
+    printf("-----------------------------------------------------------------------------\n");
 
-    for (int i=0; i<numofEntries; i++) {
+    for (int i = 0; i < numofEntries; i++) {
         printf("%d\t%s\t\t%.1f\t\t%d\t\t%d\t%s\n",
                logEntries[i].entryNo,
                logEntries[i].sensorNo,
